@@ -1,10 +1,49 @@
-﻿@page
+﻿@page "/"
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<h1>Swedes Clan Tracker</h1>
+<p class="description">Automated rank tracking and member statistics for the Swedes OSRS clan. Powered by TempleOSRS integration.</p>
+<a href="/list" class="btn-get-started">Get Started</a>
+
+<div class="cards-container">
+    <div class="card">
+        <div class="card-icon">
+            <!-- User icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+        </div>
+        <h3 class="card-title">Auto Member Sync</h3>
+        <p class="card-description">Automatically fetch and update member list from TempleOSRS with a single click.</p>
+    </div>
+
+    <div class="card card-emerald">
+        <div class="card-icon">
+            <!-- Trending-up icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+                <polyline points="16 7 22 7 22 13"></polyline>
+            </svg>
+        </div>
+        <h3 class="card-title">Real-time Stats</h3>
+        <p class="card-description">Track EHB, EHP, pets, collection logs, and total levels for all clan members.</p>
+    </div>
+
+    <div class="card">
+        <div class="card-icon">
+            <!-- Crown icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z"></path>
+                <path d="M5 21h14"></path>
+            </svg>
+        </div>
+        <h3 class="card-title">Smart Rank System</h3>
+        <p class="card-description">Automatic rank assignment based on predefined requirements and member achievements.</p>
+    </div>
 </div>

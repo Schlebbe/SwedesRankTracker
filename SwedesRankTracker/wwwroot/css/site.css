@@ -1,31 +1,344 @@
-html {
-  font-size: 14px;
+﻿html {
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+}
+
+.flex {
+    display: flex;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
+}
+
+:root {
+    --bg-dark: #1f2937;
+    --card-bg: #2c3340;
+    --gold-gradient: linear-gradient(90deg, #FFD700, #FFC107);
+    --emerald-gradient: linear-gradient(90deg, #20c997, #38d9a9);
+    --text-light: #f1f5f9;
+    --text-muted: #a1a1aa;
+    --transition: 0.3s ease-in-out;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 217 10% 90%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 168 76% 42%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 38 92% 50%;
+    --radius: 0.75rem;
+    --game-bg: 220 15% 10%;
+    --game-surface: 220 13% 15%;
+    --game-border: 220 10% 25%;
+    --game-gold: 38 92% 50%;
+    --game-emerald: 168 76% 42%;
+    --game-slate: 217 33% 17%;
+    --game-text: 210 40% 98%;
+    --game-muted: 215 20% 65%;
+    --rank-gold-start: 43 100% 50%;
+    --rank-gold-end: 38 92% 50%;
+    --rank-emerald: 168 76% 42%;
+}
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    background: linear-gradient(180deg, #1f2937, #111827);
+}
+
+h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 3rem;
+    text-align: center;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 60px;
+}
+
+p.description {
+    text-align: center;
+    max-width: 600px;
+    margin: 10px auto 30px auto;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+.btn-get-started {
+    display: block;
+    width: fit-content;
+    text-align: center;
+    margin: 0 auto 60px auto;
+    padding: 12px 30px;
+    font-weight: 600;
+    background: var(--gold-gradient);
+    color: #1f2937;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: transform var(--transition);
+}
+
+    .btn-get-started:hover {
+        transform: scale(1.05);
+    }
+
+.cards-container {
+    max-width: 1200px;
+    margin: 0 auto 80px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 0 20px;
+}
+
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 30px 20px 20px 20px;
+    transition: border-color var(--transition), transform var(--transition);
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        border-color: var(--gold-gradient);
+    }
+
+.list-card > .card svg {
+    width: 40px;
+    height: 40px;
+    color: hsl(var(--game-gold));
+}
+
+.card-icon {
+    display: inline-block;
+    width: fit-content;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    background: var(--gold-gradient);
+}
+
+.card-title {
+    font-family: 'Cinzel', serif;
+    font-size: 0.950rem;
+    font-weight: 500;
+    margin: 0px;
+    color: hsl(var(--game-muted));
+}
+
+.card-value {
+    font-size: 1.125rem;
+    font-weight: 500;
+    margin-top: 0px;
+    color: hsl(var(--game-text));
+    margin-bottom: 0px;
+}
+
+/* Different card accent */
+.list-card .card-emerald svg {
+    stroke: #20c997;
+}
+
+.card-description {
+    color: var(--text-muted);
+    font-size: 1rem;
+    line-height: 1.4;
+}
+
+/* Different gradient for second card */
+.card.card-emerald .card-icon {
+    background: var(--emerald-gradient);
+}
+
+/* ====== Header ====== */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 40px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 30px;
+}
+
+.header-left h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    margin: 0;
+    background: var(--gold-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.header-left p {
+    font-size: 1rem;
+    margin: 5px 0 0 0;
+    color: var(--text-muted);
+}
+
+.header-right button {
+    padding: 10px 20px;
+    font-weight: 600;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: var(--gold-gradient);
+    color: var(--bg-dark);
+    transition: transform var(--transition);
+}
+
+    .header-right button:hover {
+        transform: scale(1.05);
+    }
+
+/* ====== Table ====== */
+.table-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+    .table-header h2 {
+        font-family: 'Cinzel', serif;
+        font-size: 1.5rem;
+        margin: 0;
+    }
+
+    .table-header input {
+        padding: 8px 12px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background-color: var(--card-bg);
+        color: var(--text-light);
+    }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+thead {
+    background-color: var(--card-bg);
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+th {
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+td {
+    color: var(--text-light);
+}
+
+.btn-update {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background: transparent;
+    color: hsl(var(--game-emerald));
+    font-weight: 600;
+    transition: transform var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+    .btn-update:hover {
+        transform: scale(1.05);
+        background: rgba(0, 0, 0, 0.25); /* slight darkening */
+        border-color: rgba(255, 255, 255, 0.35); /* subtle highlight */
+    }
+
+/* Responsive */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .table-header {
+        flex-direction: column;
+        gap: 10px;
+    }
 }
