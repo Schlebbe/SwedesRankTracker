@@ -51,17 +51,16 @@ namespace SwedesRankTracker.Services.Temple
             if (string.IsNullOrWhiteSpace(username))
                 throw new ArgumentException("username is required", nameof(username));
 
-            Console.WriteLine($"Updating user: {username}");
             try
             {
                 var playerDto = await GetFromApiWithThrottleAsync<TemplePlayerApiResponse>($"player_stats.php?player={Uri.EscapeDataString(username)}&bosses=1");
-                var playerPetsDto = await GetFromApiWithThrottleAsync<TemplePetApiResponse>($"pets/pet_count.php?player={Uri.EscapeDataString(username)}");
+                var playerPetsDto = await GetFromApiWithThrottleAsync<TemplePetApiResponse>($"collection-log/player_collection_log.php?player={Uri.EscapeDataString(username)}&categories=all_pets");
 
                 var info = playerDto?.Data?.Info;
                 var ehb = playerDto?.Data?.Ehb;
                 var ehp = playerDto?.Data?.Ehp;
                 var collections = playerDto?.Data?.Collections;
-                var pets = playerPetsDto?.Data?.Index1?.PetCount;
+                var pets = playerPetsDto?.Data?.Items?.ListOfPets?.Count;
 
                 // Map to domain Member. Use safe defaults if API didn't include values.
                 return new Member
@@ -69,8 +68,9 @@ namespace SwedesRankTracker.Services.Temple
                     UserName = info?.Username ?? username,
                     Ehb = ehb.HasValue ? (int)Math.Round(ehb.Value) : 0,
                     Ehp = ehp.HasValue ? (int)Math.Round(ehp.Value) : 0,
-                    Pets = pets.HasValue ? (int)Math.Round(pets.Value) : 0,
+                    Pets = pets.HasValue ? pets.Value : 0,
                     Collections = collections.HasValue ? (int)Math.Round(collections.Value) : 0,
+                    LastUpdated = DateTime.UtcNow,
                 };
             }
             catch (TooManyRequestsException)
@@ -119,7 +119,8 @@ namespace SwedesRankTracker.Services.Temple
                         // Too Many Requests: respect Retry-After if present, otherwise exponential backoff
                         if (attempt >= _maxRetryAttempts)
                         {
-                            throw new TooManyRequestsException($"Received 429 Too Many Requests from API for '{uri}' after {attempt} attempts.");
+                            Console.WriteLine($"Received 429 Too Many Requests from API for '{uri}' after {attempt} attempts.");
+                            throw new TooManyRequestsException();
                         }
 
                         var retryAfter = response.Headers.RetryAfter?.Delta;

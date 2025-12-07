@@ -14,7 +14,7 @@ namespace SwedesRankTracker.Pages.List
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
             Members = await _db.Members
-                               .OrderBy(m => m.UserName)
+                               .OrderByDescending(m => m.LastUpdated)
                                .AsNoTracking()
                                .ToListAsync(cancellationToken);
         }

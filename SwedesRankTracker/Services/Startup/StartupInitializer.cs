@@ -25,15 +25,23 @@ namespace SwedesRankTracker.Services.Startup
             foreach (var username in usernames)
             {
                 // Only add if not present (compare by UserName)
-                var exists = await _db.Members.AnyAsync(m => m.UserName == username);
+                var exists = await _db.Members.OrderBy(m => m.LastUpdated).AnyAsync(m => m.UserName == username);
                 if (!exists)
                 {
-                    var member = await _templeService.GetMemberDataAsync(username);
+                    try
+                    {
+                        Console.WriteLine($"Updating user: {username} ({usernames.IndexOf(username)}/{usernames.Count})");
+                        var member = await _templeService.GetMemberDataAsync(username);
 
-                    _db.Members.Add(member);
+                        _db.Members.Add(member);
+                    }
+                    catch (TooManyRequestsException)
+                    {
+                        continue;
+                    }
                 }
             }
-            
+
             await _db.SaveChangesAsync();
         }
     }

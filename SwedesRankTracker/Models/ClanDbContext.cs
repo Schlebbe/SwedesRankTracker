@@ -29,6 +29,7 @@ public partial class ClanDbContext : DbContext
 
             entity.ToTable("Member");
 
+            entity.Property(e => e.LastUpdated).HasColumnType("datetime");
             entity.Property(e => e.UserName)
                 .HasMaxLength(20)
                 .IsUnicode(false);

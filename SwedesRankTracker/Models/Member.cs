@@ -16,4 +16,6 @@ public partial class Member
     public int Pets { get; set; }
 
     public int Collections { get; set; }
+
+    public DateTime LastUpdated { get; set; }
 }
