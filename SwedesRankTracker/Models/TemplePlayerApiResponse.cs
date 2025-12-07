@@ -20,6 +20,8 @@ namespace SwedesRankTracker.Models
         public double? Ehp { get; set; }
         [JsonPropertyName("Collections")]
         public double? Collections { get; set; }
+        [JsonPropertyName("Overall_level")]
+        public double? TotalLevel { get; set; }
     }
 
     public class TemplePlayerInfo

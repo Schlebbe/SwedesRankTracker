@@ -13,9 +13,13 @@ public partial class Member
 
     public int Ehp { get; set; }
 
-    public int Pets { get; set; }
+    public int? TotalLevel { get; set; }
 
     public int Collections { get; set; }
 
+    public int Pets { get; set; }
+
     public DateTime LastUpdated { get; set; }
+
+    public int? RankId { get; set; }
 }

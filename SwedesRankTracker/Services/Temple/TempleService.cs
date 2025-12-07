@@ -61,6 +61,7 @@ namespace SwedesRankTracker.Services.Temple
                 var ehp = playerDto?.Data?.Ehp;
                 var collections = playerDto?.Data?.Collections;
                 var pets = playerPetsDto?.Data?.Items?.ListOfPets?.Count;
+                var totalLevel = playerDto?.Data?.TotalLevel;
 
                 // Map to domain Member. Use safe defaults if API didn't include values.
                 return new Member
@@ -68,6 +69,7 @@ namespace SwedesRankTracker.Services.Temple
                     UserName = info?.Username ?? username,
                     Ehb = ehb.HasValue ? (int)Math.Round(ehb.Value) : 0,
                     Ehp = ehp.HasValue ? (int)Math.Round(ehp.Value) : 0,
+                    TotalLevel = totalLevel.HasValue ? (int)Math.Round(totalLevel.Value) : 0,
                     Pets = pets.HasValue ? pets.Value : 0,
                     Collections = collections.HasValue ? (int)Math.Round(collections.Value) : 0,
                     LastUpdated = DateTime.UtcNow,
