@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using SwedesRankTracker.Exceptions;
 using SwedesRankTracker.Models;
 
 namespace SwedesRankTracker.Services.Temple
@@ -156,24 +157,6 @@ namespace SwedesRankTracker.Services.Temple
             {
                 _throttle.Release();
             }
-        }
-    }
-
-    // Custom exception for explicit handling of exhausted 429 retries
-    public sealed class TooManyRequestsException : HttpRequestException
-    {
-        public TooManyRequestsException()
-        {
-        }
-
-        public TooManyRequestsException(string? message)
-            : base(message)
-        {
-        }
-
-        public TooManyRequestsException(string? message, Exception? inner)
-            : base(message, inner)
-        {
         }
     }
 }
