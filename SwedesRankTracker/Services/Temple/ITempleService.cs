@@ -11,5 +11,6 @@ namespace SwedesRankTracker.Services.Temple
         /// </summary>
         Task<List<string>> GetMemberUsernamesAsync();
         Task<Member> GetMemberDataAsync(string username);
+        Task UpdateAllMembersAsync(bool force);
     }
 }

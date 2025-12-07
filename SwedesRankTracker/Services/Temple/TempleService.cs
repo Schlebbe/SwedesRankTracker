@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SwedesRankTracker.Exceptions;
+using SwedesRankTracker.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -5,14 +8,14 @@ using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using SwedesRankTracker.Exceptions;
-using SwedesRankTracker.Models;
 
 namespace SwedesRankTracker.Services.Temple
 {
     public class TempleService : ITempleService
     {
         private readonly HttpClient _httpClient;
+        private readonly ClanDbContext _db;
+        private List<Rank> _ranks;
 
         // Throttling / retry configuration
         private static readonly SemaphoreSlim _throttle = new SemaphoreSlim(1, 1);
@@ -22,9 +25,71 @@ namespace SwedesRankTracker.Services.Temple
         private const int _maxRetryAttempts = 5;
         private static readonly Random _jitter = new Random();
 
-        public TempleService(HttpClient httpClient)
+        public TempleService(HttpClient httpClient, ClanDbContext db)
         {
             _httpClient = httpClient;
+            _db = db;
+            _ranks = _db.Ranks.OrderByDescending(r => r.RankId).ToList();
+        }
+
+        public async Task UpdateAllMembersAsync(bool force)
+        {
+            var usernames = await GetMemberUsernamesAsync();
+
+            var lookup = _db.Members
+                .AsNoTracking()
+                .ToDictionary(o => o.UserName, o => o.LastUpdated);
+
+            var sortedNames = usernames
+                .OrderBy(n => lookup.TryGetValue(n, out _) ? 1 : 0)
+                .ThenBy(n => lookup.TryGetValue(n, out var date) ? date : DateTime.MinValue)
+                .ToList();
+
+            if (sortedNames is null || sortedNames.Count == 0)
+                return;
+
+            var count = 0;
+
+            foreach (var username in sortedNames)
+            {
+                count++;
+                var existingMember = await _db.Members.SingleOrDefaultAsync(m => m.UserName == username);
+                if (existingMember == null || force)
+                {
+                    try
+                    {
+                        Console.WriteLine($"Updating user: {username} ({count}/{usernames.Count})");
+                        var member = await GetMemberDataAsync(username);
+
+                        if (force && existingMember != null)
+                        {
+                            existingMember.TotalLevel = member.TotalLevel;
+                            existingMember.Ehb = member.Ehb;
+                            existingMember.Ehp = member.Ehp;
+                            existingMember.Pets = member.Pets;
+                            existingMember.Collections = member.Collections;
+                            existingMember.RankId = member.RankId;
+                            existingMember.LastUpdated = DateTime.UtcNow;
+                            _db.Members.Update(existingMember);
+                        }
+                        else
+                        {
+                            _db.Members.Add(member);
+                        }
+
+                        await _db.SaveChangesAsync();
+                    }
+                    catch (TooManyRequestsException)
+                    {
+                        continue;
+                    }
+                    catch (NotQualifiedMemberException) //TODO: Not currently implemented and might not be needed
+                    {
+                        Console.WriteLine("User did not qualify for any ranks");
+                        continue;
+                    }
+                }
+            }
         }
 
         public async Task<List<string>> GetMemberUsernamesAsync()
@@ -65,7 +130,7 @@ namespace SwedesRankTracker.Services.Temple
                 var totalLevel = playerDto?.Data?.TotalLevel;
 
                 // Map to domain Member. Use safe defaults if API didn't include values.
-                return new Member
+                var member =  new Member
                 {
                     UserName = info?.Username ?? username,
                     Ehb = ehb.HasValue ? (int)Math.Round(ehb.Value) : 0,
@@ -75,6 +140,10 @@ namespace SwedesRankTracker.Services.Temple
                     Collections = collections.HasValue ? (int)Math.Round(collections.Value) : 0,
                     LastUpdated = DateTime.UtcNow,
                 };
+
+                CalculateRank(member);
+
+                return member;
             }
             catch (TooManyRequestsException)
             {
@@ -156,6 +225,24 @@ namespace SwedesRankTracker.Services.Temple
             finally
             {
                 _throttle.Release();
+            }
+        }
+
+        private void CalculateRank(Member member)
+        {
+            member.RankId = 1; // Default rank
+
+            foreach (var rank in _ranks)
+            {
+                if (member.Ehb >= rank.MinEhb ||
+                    member.Ehp >= rank.MinEhp ||
+                    (rank.MinTotalLevel != null && member.TotalLevel >= rank.MinTotalLevel) ||
+                    member.Collections >= rank.MinCollections ||
+                    member.Pets >= rank.MinPets)
+                {
+                    member.RankId = rank.RankId;
+                    break;
+                }
             }
         }
     }
