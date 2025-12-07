@@ -21,7 +21,7 @@ namespace SwedesRankTracker.Services.Startup
         public async Task RunAsync()
         {
             _ranks = await _db.Ranks.OrderByDescending(r => r.RankId).ToListAsync();
-            var usernames = await _templeService.GetClanMemberUsernamesAsync();
+            var usernames = await _templeService.GetMemberUsernamesAsync();
 
             if (usernames is null || usernames.Count == 0)
                 return;

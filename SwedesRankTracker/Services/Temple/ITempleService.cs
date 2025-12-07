@@ -9,7 +9,7 @@ namespace SwedesRankTracker.Services.Temple
         /// <summary>
         /// Returns the usernames of clan members from the external temple API.
         /// </summary>
-        Task<List<string>> GetClanMemberUsernamesAsync();
+        Task<List<string>> GetMemberUsernamesAsync();
         Task<Member> GetMemberDataAsync(string username);
     }
 }

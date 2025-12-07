@@ -27,7 +27,7 @@ namespace SwedesRankTracker.Services.Temple
             _httpClient = httpClient;
         }
 
-        public async Task<List<string>> GetClanMemberUsernamesAsync()
+        public async Task<List<string>> GetMemberUsernamesAsync()
         {
             try
             {
