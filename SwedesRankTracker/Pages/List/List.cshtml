@@ -86,7 +86,7 @@
                 {
                     <tr>
                         <td>@member.UserName</td>
-                        <td>Nice rank bro</td>
+                        <td>@(member.RankId.HasValue? Model.RanksById ? [member.RankId.Value] : "N/A")</td>
                         <td>@member.TotalLevel</td>
                         <td>@member.Ehb</td>
                         <td>@member.Ehp</td>
