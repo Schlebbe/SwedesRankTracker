@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SwedesRankTracker.Exceptions;
 using SwedesRankTracker.Models;
 using SwedesRankTracker.Services.Temple;
 
@@ -23,7 +24,7 @@ namespace SwedesRankTracker.Pages.List
         public async Task OnGetAsync(CancellationToken cancellationToken)
         {
             Members = await _db.Members
-                               .OrderBy(m => m.LastUpdated)
+                               .OrderByDescending(m => m.RankId)
                                .AsNoTracking()
                                .ToListAsync(cancellationToken);
 
@@ -46,26 +47,33 @@ namespace SwedesRankTracker.Pages.List
             if (string.IsNullOrWhiteSpace(username))
                 return BadRequest();
 
-            // Retrieve fresh data from the Temple API
-            var updatedMember = await _templeService.GetMemberDataAsync(username);
-            if (updatedMember == null)
-                return NotFound();
-
-            // Persist changes to DB (update existing)
-            var existing = await _db.Members.SingleOrDefaultAsync(m => m.UserName == username, cancellationToken);
-            if (existing != null)
+            try
             {
-                existing.TotalLevel = updatedMember.TotalLevel;
-                existing.Ehb = updatedMember.Ehb;
-                existing.Ehp = updatedMember.Ehp;
-                existing.Pets = updatedMember.Pets;
-                existing.Collections = updatedMember.Collections;
-                existing.RankId = updatedMember.RankId;
-                existing.LastUpdated = DateTime.UtcNow;
-                _db.Members.Update(existing);
-            }
+                // Retrieve fresh data from the Temple API
+                var updatedMember = await _templeService.GetMemberDataAsync(username);
+                if (updatedMember == null)
+                    return NotFound();
 
-            await _db.SaveChangesAsync(cancellationToken);
+                // Persist changes to DB (update existing)
+                var existing = await _db.Members.SingleOrDefaultAsync(m => m.UserName == username, cancellationToken);
+                if (existing != null)
+                {
+                    existing.TotalLevel = updatedMember.TotalLevel;
+                    existing.Ehb = updatedMember.Ehb;
+                    existing.Ehp = updatedMember.Ehp;
+                    existing.Pets = updatedMember.Pets;
+                    existing.Collections = updatedMember.Collections;
+                    existing.RankId = updatedMember.RankId;
+                    existing.LastUpdated = DateTime.UtcNow;
+                    _db.Members.Update(existing);
+                }
+
+                await _db.SaveChangesAsync(cancellationToken);
+            }
+            catch (TooManyRequestsException)
+            {
+
+            }
 
             return RedirectToPage();
         }
